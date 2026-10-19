@@ -1,0 +1,51 @@
+# Real-data run on the Kaggle 'Credit Card Fraud Detection' CSV (see scripts/download_data.py).
+seed: 42
+
+data:
+  source: csv
+  path: data/creditcard.csv
+
+# Chronological windows by the Time column: earliest train, next validation, latest test.
+split:
+  train_frac: 0.6
+  val_frac: 0.2
+
+autoencoder:
+  hidden_dims: [20, 12]
+  bottleneck: 6
+  lr: 0.001
+  weight_decay: 0.0
+  batch_size: 512
+  max_epochs: 60
+  patience: 6
+  denoising_std: 0.0   # > 0 switches on the denoising variant (noise on inputs, clean target)
+  num_threads: 2
+
+isolation_forest:
+  n_estimators: 300
+  max_samples: 256
+  max_features: 1.0
+  n_jobs: 2
+
+# Supervised references use the labelled training window; a different problem setting.
+logistic_regression:
+  C: 1.0
+  max_iter: 500
+
+hist_gradient_boosting:
+  max_iter: 200
+  learning_rate: 0.1
+  max_leaf_nodes: 31
+
+evaluation:
+  beta: 2.0                      # F-beta weights recall more than precision
+  recall_levels: [0.5, 0.7, 0.9]
+  alert_budgets: [0.001, 0.01]   # top 0.1% and top 1% of transactions flagged
+  cost_fp: 5.0                   # illustrative units, not real business costs
+  cost_fn: 100.0
+  n_bootstrap: 500
+
+output:
+  dir: results
+  name: run
+  model_dir: models/default

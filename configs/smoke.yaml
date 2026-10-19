@@ -1,0 +1,50 @@
+# Tiny run on the SYNTHETIC fixture. Proves the pipeline works; the numbers are not results.
+seed: 7
+
+data:
+  source: synthetic
+  n: 5000
+  fraud_rate: 0.03
+
+split:
+  train_frac: 0.6
+  val_frac: 0.2
+
+autoencoder:
+  hidden_dims: [16, 8]
+  bottleneck: 4
+  lr: 0.002
+  weight_decay: 0.0
+  batch_size: 256
+  max_epochs: 6
+  patience: 3
+  denoising_std: 0.0
+  num_threads: 2
+
+isolation_forest:
+  n_estimators: 60
+  max_samples: 256
+  max_features: 1.0
+  n_jobs: 2
+
+logistic_regression:
+  C: 1.0
+  max_iter: 200
+
+hist_gradient_boosting:
+  max_iter: 40
+  learning_rate: 0.1
+  max_leaf_nodes: 15
+
+evaluation:
+  beta: 2.0
+  recall_levels: [0.5, 0.7, 0.9]
+  alert_budgets: [0.001, 0.01]
+  cost_fp: 5.0
+  cost_fn: 100.0
+  n_bootstrap: 50
+
+output:
+  dir: results/smoke
+  name: run
+  model_dir: models/smoke
